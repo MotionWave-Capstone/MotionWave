@@ -14,21 +14,6 @@ public class SelectCarMenu : MonoBehaviour
 
     public SelectWorldMenu selectWorldPopup;
 
-    int selectedIndex = -1;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void Open()
     {
         this.gameObject.SetActive(true);
@@ -53,13 +38,13 @@ public class SelectCarMenu : MonoBehaviour
 
     public void OnCarClicked(CarContentBtn CarBtn)
     {
-        selectedIndex = CarBtn.CarIndex;
+        SettingManager.Instance.CarIndex = CarBtn.CarIndex;
         Debug.Log((CarBtn.CarIndex + 1).ToString() + "번째 데이터 선택");
     }
 
     public void OnClickNext()
     {
-        if (selectedIndex == -1)
+        if (SettingManager.Instance.CarIndex == -1)
         {
             ErrorTxt.SetText("Please Select Car.");
             ErrorTxt.gameObject.SetActive(true);
