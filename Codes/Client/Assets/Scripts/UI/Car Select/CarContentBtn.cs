@@ -12,11 +12,10 @@ public class CarContentBtn : MonoBehaviour
 
     SelectCarMenu selectCarMenu;
 
-    public void init(int index, SelectCarMenu selectCarManager)
+    public void init(SelectCarMenu selectCarManager)
     {
         this.selectCarMenu = selectCarManager;
-        CarIndex = index;
-        transform.SetParent(selectCarManager.ContentContainer);
+        transform.SetParent(selectCarManager.contentContainer);
     }
 
     public void OnClicked()

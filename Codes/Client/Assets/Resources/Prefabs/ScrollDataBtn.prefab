@@ -147,9 +147,10 @@ GameObject:
   - component: {fileID: 5096927079035291330}
   - component: {fileID: 1538981859868218379}
   - component: {fileID: 1798135328108467847}
+  - component: {fileID: 4742999219371797879}
   m_Layer: 5
   m_Name: ScrollDataBtn
-  m_TagString: Untagged
+  m_TagString: CarSelectBtn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -171,11 +172,11 @@ RectTransform:
   - {fileID: 7703169994800257283}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.227}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1775, y: 200}
-  m_Pivot: {x: 0.5, y: 1}
+  m_SizeDelta: {x: 2500, y: 200}
+  m_Pivot: {x: 0, y: 1}
 --- !u!222 &7566445311652016392
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -286,6 +287,26 @@ MonoBehaviour:
   CarName: {fileID: 6711926162408427319}
   Manufacturer: {fileID: 6932071620688659942}
   YearOfManufacture: {fileID: 2037864703865777644}
+--- !u!114 &4742999219371797879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943726294448580620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1769965394866398835
 GameObject:
   m_ObjectHideFlags: 0

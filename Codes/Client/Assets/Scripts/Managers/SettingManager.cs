@@ -5,58 +5,39 @@ using UnityEngine;
 public class SettingManager : MonoBehaviour
 {
     // singleton
-    private static SettingManager instance = null;
+    private static SettingManager _instance;
 
-    private int carIndex = -1;
-    private int mapIndex = -1;
+    public int carIndex = -1;
+    public int mapIndex = -1;
+    public string carName = string.Empty;
 
     private void Awake()
     {
-        if (null == instance)
+        // 중복 생성 방지 코드
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-        else
+        else if (_instance != this)
         {
+            Debug.LogWarning("SettingManager 중복 생성. 기존 오브젝트 유지, 새로운 오브젝트 파괴.");
             Destroy(this.gameObject);
+            return;
         }
+
+        Debug.Log("SettingManager Instance ID: " + GetInstanceID());
     }
 
     public static SettingManager Instance
     {
-        get 
-        { 
-            if (null == instance)
+        get
+        {
+            if (null == _instance)
             {
                 return null;
             }
-            return instance; 
+            return _instance;
         }
-    }
-
-    public int CarIndex
-    {
-        get
-        {
-            if (null != instance)
-                return instance.carIndex;
-            else
-                return -1;
-        }
-        set { instance.carIndex = value; }
-    }
-
-    public int MapIndex
-    {
-        get
-        {
-            if (null != instance)
-                return instance.mapIndex;
-            else 
-                return -1;
-        }
-
-        set { instance.mapIndex = value; }
     }
 }

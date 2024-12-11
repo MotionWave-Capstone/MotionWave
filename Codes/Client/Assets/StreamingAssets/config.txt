@@ -1,1 +1,1 @@
-serverIP	127.0.0.1
+serverURL	http://192.168.50.141:3000/domain

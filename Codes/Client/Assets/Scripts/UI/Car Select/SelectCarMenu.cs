@@ -1,53 +1,87 @@
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SelectCarMenu : MonoBehaviour
 {
-    public Transform ContentContainer;
+    public Transform contentContainer;
 
     public Button nextBtn;
     public Button backBtn;
-    public TMP_Text ErrorTxt; 
+    public TMP_Text errorTxt; 
 
     public SelectWorldMenu selectWorldPopup;
+    public Transform content;
+
+    ResponseData.CarMetaData[] carList;
 
     public void Open()
     {
         this.gameObject.SetActive(true);
+
+        GameObject[] existBtns = GameObject.FindGameObjectsWithTag("CarSelectBtn");
+        if ( existBtns.Length > 0 )
+        {
+            foreach (GameObject btn in existBtns )
+            {
+                Destroy(btn);
+            }
+        }
+
+        StartCoroutine(LoadCarListAndCreateButtons());
+    }
+
+    private IEnumerator LoadCarListAndCreateButtons()
+    {
         GameObject CarBtnPrefab = Resources.Load("Prefabs/ScrollDataBtn") as GameObject;
+
+        yield return StartCoroutine(GetCarList());
+
+        // carListê°€ ë¡œë“œë  ë•Œê¹Œì§€ ëŒ€ê¸°
+        yield return new WaitUntil(() => carList != null && carList.Length > 0);
 
         Debug.Log("Button Prefab Load Start");
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < carList.Length; i++)
         {
-            Debug.Log((i + 1) + "¹øÂ° ¹öÆ° »ý¼º");
+            Debug.Log((i + 1) + "ë²ˆì§¸ ë²„íŠ¼ ìƒì„±");
             Transform CarBtnInst = Instantiate(CarBtnPrefab).transform;
             CarContentBtn CarBtn = CarBtnInst.GetComponent<CarContentBtn>();
-            CarBtn.init(i, this);
+            CarBtn.CarIndex = carList[i].inum;
+            Debug.Log("CarIndex : " + CarBtn.CarIndex);
+            CarBtn.CarName.SetText(carList[i].generation);
+            CarBtn.Manufacturer.SetText(carList[i].brand);
+            CarBtn.YearOfManufacture.SetText(carList[i].prdate);
+            CarBtn.init(this);
         }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content.GetComponent<RectTransform>());
+
     }
 
     public void Close()
     {
-        ErrorTxt.gameObject.SetActive(false);
+        errorTxt.gameObject.SetActive(false);
         this.gameObject.SetActive(false);
     }
 
-    public void OnCarClicked(CarContentBtn CarBtn)
+    public void OnCarClicked(CarContentBtn carBtn)
     {
-        SettingManager.Instance.CarIndex = CarBtn.CarIndex;
-        Debug.Log((CarBtn.CarIndex + 1).ToString() + "¹øÂ° µ¥ÀÌÅÍ ¼±ÅÃ");
+        SettingManager.Instance.carIndex = carBtn.CarIndex;
+        SettingManager.Instance.carName = carBtn.CarName.text;
+        Debug.Log((carBtn.CarIndex + 1).ToString() + "ë²ˆì§¸ ë°ì´í„° ì„ íƒ");
     }
 
     public void OnClickNext()
     {
-        if (SettingManager.Instance.CarIndex == -1)
+        if (SettingManager.Instance.carIndex == -1)
         {
-            ErrorTxt.SetText("Please Select Car.");
-            ErrorTxt.gameObject.SetActive(true);
+            errorTxt.SetText("Please Select Car.");
+            errorTxt.gameObject.SetActive(true);
             return;
         }
         Debug.Log("Car Select -> Next Clicked");
@@ -55,7 +89,43 @@ public class SelectCarMenu : MonoBehaviour
         {
             this.selectWorldPopup.Close();
         });
-        ErrorTxt.gameObject.SetActive(false);
+        errorTxt.gameObject.SetActive(false);
         this.selectWorldPopup.Open();
+    }
+
+    public IEnumerator GetCarList()
+    {
+        carList = null;
+        Debug.Log("Load Car List Start");
+        yield return StartCoroutine(HttpRequests.Instance.RequestGet(
+            HttpRequests.Instance.GetServerUrl(HttpRequests.ServerEndpoints.CarList),
+            (callback) =>
+            {
+                if (callback == null)
+                {
+                    Debug.Log("Select Car => RequestGet Error : No Data Found.");
+                    errorTxt.SetText("Load Car List Failed.");
+                    errorTxt.gameObject.SetActive(true);
+                }
+                else
+                {
+                    errorTxt.gameObject.SetActive(false);
+                    try
+                    {
+                        carList = JsonUtility.FromJson<ResponseData.CarListResponseData>("{\"carDataList\":" + callback + "}").carDataList.ToArray();
+                        foreach (var car in carList)
+                        {
+                            Debug.Log(car.inum);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log("Select Car => RequestGet Error : " + e.ToString());
+                        errorTxt.SetText("Load Car List Failed : " + e.ToString());
+                        errorTxt.gameObject.SetActive(true);
+                    }
+                }
+            }
+        ));
     }
 }

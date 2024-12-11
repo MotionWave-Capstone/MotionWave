@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SelectWorldMenu : MonoBehaviour
@@ -10,8 +11,14 @@ public class SelectWorldMenu : MonoBehaviour
     public Button backBtn;
     public TMP_Text ErrorTxt;
 
-    public List<Button> mapButtons; 
+    public List<Button> mapButtons;
 
+    SettingManager settingManager;
+
+    private void Awake()
+    {
+        settingManager = SettingManager.Instance;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -47,13 +54,13 @@ public class SelectWorldMenu : MonoBehaviour
 
     void OnMapBtnClicked(int index)
     {
-        SettingManager.Instance.MapIndex = index;
+        settingManager.mapIndex = index;
         Debug.Log((index + 1) + "¹øÂ° ¸Ê ¼±ÅÃµÊ");
     }
 
     public void OnClickNext()
     {
-        if (SettingManager.Instance.MapIndex == -1)
+        if (settingManager.mapIndex == -1)
         {
             ErrorTxt.SetText("Please Select Map.");
             ErrorTxt.gameObject.SetActive(true);
@@ -62,6 +69,8 @@ public class SelectWorldMenu : MonoBehaviour
         Debug.Log("Map Select -> Next Clicked");
         
         ErrorTxt.gameObject.SetActive(false);
-        Debug.Log("Selected Car : " + SettingManager.Instance.CarIndex + " Selected Map : " + SettingManager.Instance.MapIndex);
+        Debug.Log("Selected Car : " + settingManager.carIndex + " Selected Map : " + settingManager.mapIndex);
+
+        SceneManager.LoadScene("InGameScene");
     }
 }
